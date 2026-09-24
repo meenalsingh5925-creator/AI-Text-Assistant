@@ -7,6 +7,7 @@ Original file is located at
     https://colab.research.google.com/drive/11I1b-j1ifwQ7KNGxiEqMhxyXG6aWdUQY
 """
 
+import os
 import gradio as gr
 from transformers import pipeline
 
@@ -19,7 +20,7 @@ def analyze_and_generate(user_text):
     sentiment_label = sentiment_result['label']
     sentiment_score = sentiment_result['score']
 
-    generated_outputs = generator(user_text, max_length=50, num_return_sequences=1)
+    generated_outputs = generator(user_text, max_new_tokens=50, num_return_sequences=1)
     generated_text = generated_outputs[0]['generated_text']
 
     sentiment_summary = f"Analysis: {sentiment_label} (confidence: {sentiment_score * 100}%)"
@@ -54,4 +55,11 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
     )
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8080))
+    demo.launch(server_name="0.0.0.0.",
+                server_port=port,
+                debug=True
+               )
+
+
     demo.launch()
